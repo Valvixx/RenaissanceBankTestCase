@@ -4,23 +4,20 @@ theme: /
 
     state: Start
         q!: $regex</start>
-        a: Начнём.
+        a: Здравствуйте, я бот-помощник Ренессанс Банка, чем я могу вам помочь?
 
     state: Hello
         intent!: /привет
-        a: Привет привет
+        a: Здравствуйте! Чем я могу вам помочь?
 
     state: Bye
         intent!: /пока
-        a: Пока пока
+        a: До свидания!
+        script: $jsapi.stopSession();
 
     state: NoMatch
         event!: noMatch
         a: Я не понял. Вы сказали: {{$request.query}}
-
-    state: Match
-        event!: match
-        a: {{$context.intent.answer}}
         
     state: Hotline
         intent!: /Горячая линия
@@ -32,22 +29,22 @@ theme: /
         else:
             a: Я могу перевести вас на оператора для решения вопроса в чате, устроит?
             buttons:
-                { text: "Да", transition: "/Hotline/Transfer",  request_location: true, one_time_keyboard: false }
-                { text: "Нет", transition: "/Hotline/Number",  request_location: true, one_time_keyboard: false }
+                { text: "Да", transition: "/Hotline/Transfer"}
+                { text: "Нет", transition: "/Hotline/Number"}
         state: Transfer
             a: Перевожу...
         
         state: Number
             a: Номер поддержки 8 (495) 981-0-981 работает 24/7. Звонок платный, стоимость зависит от тарифов вашего оператора связи.
-        go!: /CloseDialog
+            go!: /CloseDialog
         
     state: Payment
         intent!: /Способы оплаты
         a: Какой тип оплаты вас интересует?
         buttons:
-            { text: "Как пополнить в приложении?", transition: "/Payment/App",  request_location: true, one_time_keyboard: false }
-            { text: "Где внести наличные?", transition: "/Payment/Cash",  request_location: true, one_time_keyboard: false }
-            { text: "Сложности с оплатой", transition: "/Payment/Problems",  request_location: true, one_time_keyboard: false }
+            { text: "Как пополнить в приложении?", transition: "/Payment/App"}
+            { text: "Где внести наличные?", transition: "/Payment/Cash"}
+            { text: "Сложности с оплатой", transition: "/Payment/Problems"}
             
         state: App
             a: Для пополнения продукта перейдите в него и выберите «Пополнить». 💰 ознакомиться с комиссией можно при оплате.
@@ -57,7 +54,7 @@ theme: /
                 • в офисе нашего банка (банкомат/терминал/касса);  
                 • в банкоматах: «ВТБ», «Альфа-Банка», «Райффайзенбанк».
                 Комиссии нет, а внести можно от 500тыс. до 1.5 млн. \n\n
-                Подобрать удобный адрес и ознакомиться с режимом работы можно в разделе 🏛 [«Отделения и банкоматы»](https://rencredit.ru/addresses/) \n\n
+                Подобрать удобный адрес и ознакомиться с режимом работы можно в разделе [«Отделения и банкоматы»](https://rencredit.ru/addresses/) \n\n
                 🏛 Подробная информация о всех способах оплаты доступна на нашем сайте в разделе [«Платежи и переводы»](https://rencredit.ru/payment/).
             go!: /CloseDialog        
         state: Problems
@@ -65,4 +62,9 @@ theme: /
             go!: /CloseDialog
         
     state: CloseDialog
-        a: Остались ли у вас какие то вопросы?
+        a: Остались ли у вас ещё вопросы? Могу ещё рассказать про:
+        buttons:
+            {text: "💳 Оплата", transition: "/Payment"}
+            {text: "📞 Поддержка", transition: "/Hotline"}
+            {text: "❌ Нет вопросов", transition: "/Bye"}
+            
